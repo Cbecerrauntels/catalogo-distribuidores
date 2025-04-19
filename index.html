@@ -5,12 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo Mayorista</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .whatsapp-button:hover {
-      transform: scale(1.05);
-      transition: all 0.2s;
-    }
-  </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
   <header class="bg-white shadow p-4 text-center">
@@ -49,17 +43,21 @@
         const text = await res.text();
         const json = JSON.parse(text.substring(47).slice(0, -2));
         const cols = json.table.cols.map(c => c.label);
+
         productos = json.table.rows.map(row => {
           const obj = {};
           row.c.forEach((cell, i) => {
-            obj[cols[i]] = cell ? cell.v : "";
+            const colName = cols[i].trim().toUpperCase();
+            obj[colName] = cell && cell.v ? cell.v : "";
           });
           return obj;
         });
+
+        console.log("✅ Productos cargados:", productos);
         mostrarProductos();
         cargarFiltros();
       } catch (error) {
-        console.error("Error al cargar los datos:", error);
+        console.error("❌ Error al cargar datos:", error);
       }
     }
 
@@ -94,18 +92,9 @@
               <li>📦 ${p["PACK 2"]}: $${p["PRECIO 2"]}</li>
             </ul>
             <div class="grid grid-cols-1 gap-2">
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
-🛒 ${p.PRODUCTO}
-✅ Opción: Unidad
-💲 Precio: $${p["PRECIO UNIDAD"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
-🛒 ${p.PRODUCTO}
-✅ Opción: ${p["PACK 1"]}
-💲 Precio: $${p["PRECIO 1"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 1"]}</a>
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
-🛒 ${p.PRODUCTO}
-✅ Opción: ${p["PACK 2"]}
-💲 Precio: $${p["PRECIO 2"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 2"]}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: Unidad\n💲 Precio: $${p["PRECIO UNIDAD"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: ${p["PACK 1"]}\n💲 Precio: $${p["PRECIO 1"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 1"]}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: ${p["PACK 2"]}\n💲 Precio: $${p["PRECIO 2"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 2"]}</a>
             </div>
           `;
 
@@ -114,7 +103,7 @@
     }
 
     function cargarFiltros() {
-      const categorias = [...new Set(productos.map(p => p.CATEGORIA).filter(Boolean))];
+      const categorias = [...new Set(productos.map(p => p["CATEGORIA"]).filter(Boolean))];
       const select = document.getElementById("categoryFilter");
       categorias.forEach(c => {
         const opt = document.createElement("option");
