@@ -6,6 +6,8 @@
   <title>Catálogo Mayorista</title>
   <!-- Cargar TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Cargar PapaParse desde CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
   <header class="bg-white shadow p-4 text-center">
@@ -38,55 +40,45 @@
   </footer>
 
   <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/1w1czDKnRvyYkUvRmt98N0EnTRGMqa3b-CyteYEcZZ0Q/gviz/tq?tqx=out:json";
+    // URL del archivo CSV en el repositorio de GitHub
+    const CSV_URL = "https://raw.githubusercontent.com/Cbecerrauntels/catalogo-distribuidores/refs/heads/main/CATALOGO%20DGC%20-%20Hoja%201.csv";
 
     let productos = [];
 
-    async function cargarDatos() {
+    // Función para cargar datos desde CSV
+    async function cargarDatosDesdeCSV() {
       try {
-        const res = await fetch(SHEET_URL);
-        const text = await res.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const res = await fetch(CSV_URL);
+        const csvText = await res.text();
 
-        // Obtener y validar nombres de columnas
-        const cols = json.table.cols.map(c => c.label.toLowerCase());
-        console.log("🔍 Columnas detectadas:", cols);
+        // Parsear CSV con PapaParse
+        const parsed = Papa.parse(csvText, { header: true });
+        console.log("🔍 Datos parseados desde CSV:", parsed.data);
 
-        const columnasEsperadas = [
-          "producto", "suscripcion", "stock", "descripcion",
-          "precio_unidad", "pack_1", "precio_1", "pack_2",
-          "precio_2", "categoria", "url_foto"
-        ];
-        const faltantes = columnasEsperadas.filter(c => !cols.includes(c));
-        if (faltantes.length > 0) {
-          console.error("❌ Columnas faltantes en Google Sheets:", faltantes);
-          return;
-        }
-
-        // Mapear filas a objetos
-        productos = json.table.rows.map(row => {
-          const obj = {};
-          row.c.forEach((cell, i) => {
-            const valor = cell?.v || "";
-            obj[cols[i]] = valor.toString().trim(); // Convertir a cadena y limpiar espacios
-          });
-
-          // Limpiar valores de precios (eliminar "USD")
-          obj.precio_unidad = parseFloat(obj.precio_unidad.replace("USD", "").trim()) || 0;
-          obj.precio_1 = parseFloat(obj.precio_1.replace("USD", "").trim()) || 0;
-          obj.precio_2 = parseFloat(obj.precio_2.replace("USD", "").trim()) || 0;
-
-          return obj;
-        });
+        // Procesar datos y limpiar precios
+        productos = parsed.data.map(p => ({
+          producto: p.producto || "",
+          suscripcion: p.suscripcion || "",
+          stock: p.stock || "",
+          descripcion: p.descripcion || "",
+          precio_unidad: parseFloat(p.precio_unidad.replace("USD", "").trim()) || 0,
+          pack_1: p.pack_1 || "",
+          precio_1: parseFloat(p.precio_1.replace("USD", "").trim()) || 0,
+          pack_2: p.pack_2 || "",
+          precio_2: parseFloat(p.precio_2.replace("USD", "").trim()) || 0,
+          categoria: p.categoria || "",
+          url_foto: p.url_foto || ""
+        }));
 
         console.log("✅ Productos procesados:", productos);
         mostrarProductos();
         cargarFiltros();
       } catch (error) {
-        console.error("❌ Error al cargar datos:", error);
+        console.error("❌ Error al cargar datos desde CSV:", error);
       }
     }
 
+    // Función para mostrar productos en el catálogo
     function mostrarProductos() {
       const contenedor = document.getElementById("catalogo");
       const noResults = document.getElementById("noResults");
@@ -107,7 +99,6 @@
 
       if (productosFiltrados.length === 0) {
         noResults.classList.remove("hidden");
-        console.log("⚠️ No hay productos que coincidan con los filtros.");
       } else {
         noResults.classList.add("hidden");
         productosFiltrados.forEach(p => {
@@ -116,12 +107,12 @@
           card.innerHTML = `
             <img src="${p.url_foto}" alt="${p.producto}" class="h-40 object-contain mb-2">
             <h2 class="text-lg font-bold mb-1">${p.producto}</h2>
-            <p class="text-sm mb-1 font-semibold">${p.suscripcion || "Sin suscripción"}</p>
-            <p class="text-sm mb-2">${p.descripcion || "Sin descripción"}</p>
+            <p class="text-sm mb-1 font-semibold">${p.suscripcion}</p>
+            <p class="text-sm mb-2">${p.descripcion}</p>
             <ul class="text-sm mb-4">
               <li>🎯 Unidad: $${p["precio_unidad"].toFixed(2)}</li>
-              <li>📦 ${p["pack_1"] || "Pack 1"}: $${p["precio_1"].toFixed(2)}</li>
-              <li>📦 ${p["pack_2"] || "Pack 2"}: $${p["precio_2"].toFixed(2)}</li>
+              <li>📦 ${p["pack_1"]}: $${p["precio_1"].toFixed(2)}</li>
+              <li>📦 ${p["pack_2"]}: $${p["precio_2"].toFixed(2)}</li>
             </ul>
           `;
           contenedor.appendChild(card);
@@ -129,6 +120,7 @@
       }
     }
 
+    // Función para cargar las categorías en el filtro
     function cargarFiltros() {
       const categorias = [...new Set(productos.map(p => p["categoria"]).filter(Boolean))];
       const select = document.getElementById("categoryFilter");
@@ -140,6 +132,7 @@
       });
     }
 
+    // Listeners para los filtros
     document.getElementById("searchInput").addEventListener("input", mostrarProductos);
     document.getElementById("categoryFilter").addEventListener("change", mostrarProductos);
     document.getElementById("stockFilter").addEventListener("change", mostrarProductos);
@@ -148,7 +141,8 @@
       mostrarProductos();
     });
 
-    cargarDatos();
+    // Cargar datos al iniciar
+    cargarDatosDesdeCSV();
   </script>
 </body>
 </html>
