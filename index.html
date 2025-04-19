@@ -75,7 +75,7 @@
           (!search || p["PRODUCTO"].toLowerCase().includes(search)) &&
           (!categoria || p["CATEGORIA"] === categoria) &&
           (!stock || p["STOCK"] === stock) &&
-          (!isNaN(precioMax) && parseFloat(p["PRECIO UNIDAD"]) <= precioMax)
+          (!isNaN(precioMax) && parseFloat(p["PRECIO_UNIDAD"]) <= precioMax)
         )
         .forEach(p => {
           const card = document.createElement("div");
@@ -87,14 +87,14 @@
             <p class="text-sm mb-1 font-semibold">${p.SUSCRIPCION}</p>
             <p class="text-sm mb-2">${p.DESCRIPCION}</p>
             <ul class="text-sm mb-4">
-              <li>🎯 Unidad: $${p["PRECIO UNIDAD"]}</li>
-              <li>📦 ${p["PACK 1"]}: $${p["PRECIO 1"]}</li>
-              <li>📦 ${p["PACK 2"]}: $${p["PRECIO 2"]}</li>
+              <li>🎯 Unidad: $${p["PRECIO_UNIDAD"]}</li>
+              <li>📦 ${p["PACK_1"]}: $${p["PRECIO_1"]}</li>
+              <li>📦 ${p["PACK_2"]}: $${p["PRECIO_2"]}</li>
             </ul>
             <div class="grid grid-cols-1 gap-2">
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: Unidad\n💲 Precio: $${p["PRECIO UNIDAD"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: ${p["PACK 1"]}\n💲 Precio: $${p["PRECIO 1"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 1"]}</a>
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: ${p["PACK 2"]}\n💲 Precio: $${p["PRECIO 2"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 2"]}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: Unidad\n💲 Precio: $${p["PRECIO_UNIDAD"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: ${p["PACK_1"]}\n💲 Precio: $${p["PRECIO_1"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK_1"]}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.PRODUCTO}\n✅ Opción: ${p["PACK_2"]}\n💲 Precio: $${p["PRECIO_2"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK_2"]}</a>
             </div>
           `;
 
