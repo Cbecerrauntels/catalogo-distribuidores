@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo para Distribuidores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .whatsapp-button:hover {
+      transform: scale(1.05);
+      transition: all 0.2s;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <header class="bg-white shadow p-4 text-center">
+    <h1 class="text-2xl font-bold">Catálogo Mayorista - Productos Digitales</h1>
+  </header>
+
+  <div class="max-w-6xl mx-auto p-4">
+    <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <input id="searchInput" type="text" placeholder="Buscar producto..." class="p-2 border rounded">
+      <select id="categoryFilter" class="p-2 border rounded">
+        <option value="">Todas las categorías</option>
+      </select>
+      <select id="stockFilter" class="p-2 border rounded">
+        <option value="">Stock</option>
+        <option value="Sí">En stock</option>
+        <option value="No">Sin stock</option>
+      </select>
+      <input id="priceRange" type="range" min="0" max="100" value="100" class="w-full">
+    </div>
+
+    <div id="catalogo" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </div>
+
+  <footer class="bg-white text-center p-4 text-sm text-gray-500">
+    Contacto WhatsApp: +51 929809650
+  </footer>
+
+  <script>
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/1w1czDKnRvyYkUvRmt98N0EnTRGMqa3b-CyteYEcZZ0Q/gviz/tq?tqx=out:json";
+
+    let productos = [];
+
+    async function cargarDatos() {
+      const res = await fetch(SHEET_URL);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      const cols = json.table.cols.map(c => c.label);
+      productos = json.table.rows.map(row => {
+        const obj = {};
+        row.c.forEach((cell, i) => {
+          obj[cols[i]] = cell ? cell.v : "";
+        });
+        return obj;
+      });
+      mostrarProductos();
+      cargarFiltros();
+    }
+
+    function mostrarProductos() {
+      const contenedor = document.getElementById("catalogo");
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const categoria = document.getElementById("categoryFilter").value;
+      const stock = document.getElementById("stockFilter").value;
+      const precioMax = parseFloat(document.getElementById("priceRange").value);
+
+      contenedor.innerHTML = "";
+
+      productos
+        .filter(p =>
+          (!search || p.Producto.toLowerCase().includes(search)) &&
+          (!categoria || p.Categoría === categoria) &&
+          (!stock || p.Stock === stock) &&
+          (!isNaN(precioMax) && parseFloat(p["Precio Unidad (USD)"]) <= precioMax)
+        )
+        .forEach(p => {
+          const card = document.createElement("div");
+          card.className = "bg-white p-4 shadow rounded flex flex-col";
+
+          card.innerHTML = `
+            <img src="${p.Imagen}" alt="${p.Producto}" class="h-40 object-contain mb-2">
+            <h2 class="text-lg font-bold mb-1">${p.Producto}</h2>
+            <p class="text-sm mb-2">${p.Descripción}</p>
+            <ul class="text-sm mb-4">
+              <li>🎯 Unidad: $${p["Precio Unidad (USD)"]}</li>
+              <li>📦 ${p["Pack 1"]}: $${p["Precio Pack 1 (USD)"]}</li>
+              <li>📦 ${p["Pack 2"]}: $${p["Precio Pack 2 (USD)"]}</li>
+            </ul>
+            <div class="grid grid-cols-1 gap-2">
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
+🛒 ${p.Producto}
+✅ Opción: Unidad
+💲 Precio: $${p["Precio Unidad (USD)"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
+🛒 ${p.Producto}
+✅ Opción: ${p["Pack 1"]}
+💲 Precio: $${p["Precio Pack 1 (USD)"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p["Pack 1"]}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
+🛒 ${p.Producto}
+✅ Opción: ${p["Pack 2"]}
+💲 Precio: $${p["Precio Pack 2 (USD)"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["Pack 2"]}</a>
+            </div>
+          `;
+
+          contenedor.appendChild(card);
+        });
+    }
+
+    function cargarFiltros() {
+      const categorias = [...new Set(productos.map(p => p.Categoría).filter(Boolean))];
+      const select = document.getElementById("categoryFilter");
+      categorias.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        select.appendChild(opt);
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", mostrarProductos);
+    document.getElementById("categoryFilter").addEventListener("change", mostrarProductos);
+    document.getElementById("stockFilter").addEventListener("change", mostrarProductos);
+    document.getElementById("priceRange").addEventListener("input", mostrarProductos);
+
+    cargarDatos();
+  </script>
+</body>
+</html>
