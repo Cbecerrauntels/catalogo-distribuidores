@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo para Distribuidores</title>
+  <title>Catálogo Mayorista</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .whatsapp-button:hover {
@@ -70,37 +70,37 @@
 
       productos
         .filter(p =>
-          (!search || p.Producto.toLowerCase().includes(search)) &&
-          (!categoria || p.Categoría === categoria) &&
-          (!stock || p.Stock === stock) &&
-          (!isNaN(precioMax) && parseFloat(p["Precio Unidad (USD)"]) <= precioMax)
+          (!search || p.PRODUCTO.toLowerCase().includes(search)) &&
+          (!categoria || p.CATEGORIA === categoria) &&
+          (!stock || p.STOCK === stock) &&
+          (!isNaN(precioMax) && parseFloat(p["PRECIO UNIDAD"]) <= precioMax)
         )
         .forEach(p => {
           const card = document.createElement("div");
           card.className = "bg-white p-4 shadow rounded flex flex-col";
 
           card.innerHTML = `
-            <img src="${p.Imagen}" alt="${p.Producto}" class="h-40 object-contain mb-2">
-            <h2 class="text-lg font-bold mb-1">${p.Producto}</h2>
-            <p class="text-sm mb-2">${p.Descripción}</p>
+            <img src="${p.URL_FOTO}" alt="${p.PRODUCTO}" class="h-40 object-contain mb-2">
+            <h2 class="text-lg font-bold mb-1">${p.PRODUCTO}</h2>
+            <p class="text-sm mb-2">${p.DESCRIPCION}</p>
             <ul class="text-sm mb-4">
-              <li>🎯 Unidad: $${p["Precio Unidad (USD)"]}</li>
-              <li>📦 ${p["Pack 1"]}: $${p["Precio Pack 1 (USD)"]}</li>
-              <li>📦 ${p["Pack 2"]}: $${p["Precio Pack 2 (USD)"]}</li>
+              <li>🎯 Unidad: $${p["PRECIO UNIDAD"]}</li>
+              <li>📦 ${p.PACK}: $${p["PRECIO 1"]}</li>
+              <li>📦 ${p["PACK 2"]}: $${p["PRECIO 2"]}</li>
             </ul>
             <div class="grid grid-cols-1 gap-2">
               <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
-🛒 ${p.Producto}
+🛒 ${p.PRODUCTO}
 ✅ Opción: Unidad
-💲 Precio: $${p["Precio Unidad (USD)"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
+💲 Precio: $${p["PRECIO UNIDAD"]}`)}" target="_blank" class="whatsapp-button bg-green-500 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
               <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
-🛒 ${p.Producto}
-✅ Opción: ${p["Pack 1"]}
-💲 Precio: $${p["Precio Pack 1 (USD)"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p["Pack 1"]}</a>
+🛒 ${p.PRODUCTO}
+✅ Opción: ${p.PACK}
+💲 Precio: $${p["PRECIO 1"]}`)}" target="_blank" class="whatsapp-button bg-green-600 text-white text-sm py-2 rounded text-center">Comprar ${p.PACK}</a>
               <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:
-🛒 ${p.Producto}
-✅ Opción: ${p["Pack 2"]}
-💲 Precio: $${p["Precio Pack 2 (USD)"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["Pack 2"]}</a>
+🛒 ${p.PRODUCTO}
+✅ Opción: ${p["PACK 2"]}
+💲 Precio: $${p["PRECIO 2"]}`)}" target="_blank" class="whatsapp-button bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p["PACK 2"]}</a>
             </div>
           `;
 
@@ -109,7 +109,7 @@
     }
 
     function cargarFiltros() {
-      const categorias = [...new Set(productos.map(p => p.Categoría).filter(Boolean))];
+      const categorias = [...new Set(productos.map(p => p.CATEGORIA).filter(Boolean))];
       const select = document.getElementById("categoryFilter");
       categorias.forEach(c => {
         const opt = document.createElement("option");
@@ -128,3 +128,4 @@
   </script>
 </body>
 </html>
+
