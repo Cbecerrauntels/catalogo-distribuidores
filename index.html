@@ -3,36 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo Mayorista</title>
-  <!-- Cargar TailwindCSS -->
+  <title>Catálogo Estático para Distribuidores</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Cargar PapaParse desde CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-100 text-gray-900">
   <header class="bg-white shadow p-4 text-center">
     <h1 class="text-2xl font-bold">Catálogo Mayorista - Productos Digitales</h1>
   </header>
 
-  <div class="max-w-6xl mx-auto p-4">
+  <div class="max-w-7xl mx-auto p-4">
     <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
       <input id="searchInput" type="text" placeholder="Buscar producto..." class="p-2 border rounded">
       <select id="categoryFilter" class="p-2 border rounded">
         <option value="">Todas las categorías</option>
       </select>
       <select id="stockFilter" class="p-2 border rounded">
-        <option value="">Stock</option>
-        <option value="sí">En stock</option>
-        <option value="no">Sin stock</option>
+        <option value="">Todos</option>
+        <option value="SI">En stock</option>
+        <option value="NO">Sin stock</option>
       </select>
-      <div>
-        <input id="priceRange" type="range" min="0" max="200" value="200" class="w-full">
-        <span id="priceLabel" class="text-sm">Hasta: $200</span>
-      </div>
+      <input id="priceRange" type="range" min="0" max="100" value="100" class="w-full">
     </div>
 
     <div id="catalogo" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    <p id="noResults" class="text-center text-gray-500 hidden">No se encontraron productos.</p>
   </div>
 
   <footer class="bg-white text-center p-4 text-sm text-gray-500">
@@ -40,107 +33,82 @@
   </footer>
 
   <script>
-    // URL del archivo CSV en el repositorio de GitHub
-    const CSV_URL = "https://raw.githubusercontent.com/Cbecerrauntels/catalogo-distribuidores/refs/heads/main/CATALOGO%20DGC%20-%20Hoja%201.csv";
+    // 🔁 Aquí puedes modificar tus productos cuando cambien los precios o stock
+    const productos = [
+  // 🔁 Productos pegados automáticamente desde tu CSV completo
+  {producto:"SPOTIFY PREMIUM",suscripcion:"12 MESES",stock:"SI",descripcion:"Musica sin publicidad, en alta definición",precio_unidad:15,pack_1:"5 UNIDADES",precio_1:60,pack_2:"12 UNIDADES",precio_2:120,categoria:"STREAMING",url_foto:"https://i.postimg.cc/j5wGcBpv/spotify.png"},
+  {producto:"YOUTUBE PREMIUM",suscripcion:"12 MESES",stock:"SI",descripcion:"Videos sin publicidad, incluye youtube music",precio_unidad:20,pack_1:"5 UNIDADES",precio_1:80,pack_2:"10 UNIDADES",precio_2:150,categoria:"STREAMING",url_foto:"https://i.postimg.cc/k40mK7p7/Youtube.png"},
+  {producto:"PANEL CANVA 50 USER",suscripcion:"12 MESES",stock:"SI",descripcion:"Panel de canva para 50 usuarios",precio_unidad:18,pack_1:"5 UNIDADES",precio_1:60,pack_2:"10 UNIDADES",precio_2:105,categoria:"DISEÑO",url_foto:"https://i.postimg.cc/xTPwTGnf/42.png"},
+  {producto:"PANEL CANVA 500 USER",suscripcion:"12 MESES",stock:"SI",descripcion:"Panel de canva para 500 usuarios",precio_unidad:20,pack_1:"5 UNIDADES",precio_1:90,pack_2:"12 UNIDADES",precio_2:168,categoria:"DISEÑO",url_foto:"https://i.postimg.cc/xTPwTGnf/42.png"},
+  {producto:"INVITACION CANVA EQUIPO",suscripcion:"12 MESES",stock:"SI",descripcion:"Invitación para ser parte de 1 equipo",precio_unidad:2,pack_1:"5 UNIDADES",precio_1:10,pack_2:"50 UNIDADES",precio_2:60,categoria:"DISEÑO",url_foto:"https://i.postimg.cc/gcV5NywV/canva-pro-price-in-bd-1048x855.jpg"},
+  {producto:"OFFICE 365 A1 PLUS",suscripcion:"12 MESES",stock:"SI",descripcion:"Office 365 completo con 100 GB almacenamiento ONEDRIVE.",precio_unidad:7,pack_1:"5 UNIDADES",precio_1:25,pack_2:"50 UNIDADES",precio_2:175,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/MGJVPBfB/A1-plus.png"},
+  {producto:"OFFICE 365 E5 ENTERPRISE",suscripcion:"12 MESES",stock:"SI",descripcion:"Office 365 completo con 5 TB almacenamiento onedrive",precio_unidad:25,pack_1:"5 UNIDADES",precio_1:100,pack_2:"25 UNIDADES",precio_2:250,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/9fHgdrW8/e5.jpg"},
+  {producto:"AUTODESK EDU",suscripcion:"12 MESES",stock:"SI",descripcion:"Los mejores programas para ingeniería",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:75,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/G23gHVQq/autodesk.jpg"},
+  {producto:"ZOOM EDU",suscripcion:"6 MESES",stock:"SI",descripcion:"300 PARTICIPANTES, GRABAR LA CONFERENCIA, PIZARRA INTERACTIVA, FUNCIONA SOLO PC",precio_unidad:16,pack_1:"5 UNIDADES",precio_1:70,pack_2:"10 UNIDADES",precio_2:110,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/Fsg4k5gQ/zoom-edu.png"},
+  {producto:"GITHUB DEVELOPER PACK",suscripcion:"NO APLICA",stock:"SI",descripcion:"Pack completo para desarrolladores",precio_unidad:20,pack_1:"5 UNIDADES",precio_1:80,pack_2:"10 UNIDADES",precio_2:120,categoria:"PROGRAMADOR",url_foto:"https://i.postimg.cc/t4CzdWP4/github.png"},
+  {producto:"ESET INTERNET SECURITY",suscripcion:"12 MESES",stock:"SI",descripcion:"Antivirus de alta gama, protección asegurada",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"10 UNIDADES",precio_2:40,categoria:"ANTIVIRUS",url_foto:"https://i.postimg.cc/KYWQ8j1v/eset.jpg"},
+  {producto:"GOOGLE WORKSPACE 2 TB",suscripcion:"12 MESES",stock:"SI",descripcion:"Almacenamiento sin límites. Se entrega cuenta nueva",precio_unidad:12,pack_1:"5 UNIDADES",precio_1:50,pack_2:"10 UNIDADES",precio_2:100,categoria:"ALMACENAMIENTO",url_foto:"https://i.postimg.cc/50YSCTkr/Chat-GPT-Image-16-abr-2025-12-14-53-p-m.png"},
+  {producto:"JETBRAINS EDU",suscripcion:"12 MESES",stock:"SI",descripcion:"Pack desarrollador completo",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:75,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/y6DxRdkC/jetbrains.png"},
+  {producto:"FIGMA EDU",suscripcion:"12 MESES",stock:"SI",descripcion:"Haz tus mejores diseños realidad",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:75,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/cCRchcXr/figma.png"},
+  {producto:"WINDOWS 11 PRO RETAIL",suscripcion:"PERMANENTE",stock:"SI",descripcion:"Licencia original retail. Garantía de activación",precio_unidad:7,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:100,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/cJJ0N93G/win11.png"},
+  {producto:"CCLEANER PRO",suscripcion:"12 MESES",stock:"SI",descripcion:"Limpia a fondo tu PC",precio_unidad:8,pack_1:"5 UNIDADES",precio_1:35,pack_2:"25 UNIDADES",precio_2:150,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/25G2RTDv/ccleaner.png"},
+  {producto:"GOMONEY BANK",suscripcion:"NO APLICA",stock:"SI",descripcion:"BANCA DE NIGERIA",precio_unidad:50,pack_1:"5 UNIDADES",precio_1:200,pack_2:"10 UNIDADES",precio_2:400,categoria:"BANCOS",url_foto:"https://i.postimg.cc/x1wcjS0V/go-money.png"},
+  {producto:"KUDA BANK",suscripcion:"NO APLICA",stock:"NO",descripcion:"BANCA DE NIGERIA",precio_unidad:50,pack_1:"5 UNIDADES",precio_1:200,pack_2:"10 UNIDADES",precio_2:400,categoria:"BANCOS",url_foto:"https://i.postimg.cc/YSrTWv26/Chat-GPT-Image-18-abr-2025-08-38-36-p-m.png"},
+  {producto:"NETFLIX",suscripcion:"1 MES",stock:"SI",descripcion:"Las mejores series y películas",precio_unidad:10,pack_1:"5 UNIDADES",precio_1:45,pack_2:"10 UNIDADES",precio_2:80,categoria:"STREAMING",url_foto:"https://i.postimg.cc/YqP5Tr3k/73f68aaa-ea3e-4fc0-a3de-bcdf369e77d5.jpg"},
+  {producto:"NETFLIX",suscripcion:"6 MESES",stock:"SI",descripcion:"Las mejores series y películas",precio_unidad:48,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"STREAMING",url_foto:"https://i.postimg.cc/YqP5Tr3k/73f68aaa-ea3e-4fc0-a3de-bcdf369e77d5.jpg"},
+  {producto:"PRIMEVIDEO",suscripcion:"1 MES",stock:"SI",descripcion:"Lo mejor en series antiguas",precio_unidad:3.5,pack_1:"5 UNIDADES",precio_1:15,pack_2:"10 UNIDADES",precio_2:22,categoria:"STREAMING",url_foto:"https://i.postimg.cc/Dwb9T9jG/111.png"},
+  {producto:"PRIMEVIDEO",suscripcion:"6 MESES",stock:"SI",descripcion:"Lo mejor en series antiguas",precio_unidad:18,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"STREAMING",url_foto:"https://i.postimg.cc/Dwb9T9jG/111.png"},
+  {producto:"HBO MAX STANDAR",suscripcion:"1 MES",stock:"SI",descripcion:"Disfruta de entretenimiento sin límites",precio_unidad:3,pack_1:"5 UNIDADES",precio_1:15,pack_2:"10 UNIDADES",precio_2:25,categoria:"STREAMING",url_foto:"https://i.postimg.cc/sgrgb4K3/max.png"},
+  {producto:"DISNEY PLUS",suscripcion:"1 MES",stock:"SI",descripcion:"Para ver en familia",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"10 UNIDADES",precio_2:35,categoria:"STREAMING",url_foto:"https://i.postimg.cc/L8Tb2mkn/disney.jpg"},
+  {producto:"DISNEY PLUS",suscripcion:"6 MESES",stock:"SI",descripcion:"Para ver en familia",precio_unidad:30,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"STREAMING",url_foto:"https://i.postimg.cc/L8Tb2mkn/disney.jpg"},
+  {producto:"VIX PREMIUM",suscripcion:"1 MES",stock:"SI",descripcion:"Las mejores series y películas mexicanas",precio_unidad:2,pack_1:"5 UNIDADES",precio_1:7.5,pack_2:"12 UNIDADES",precio_2:10,categoria:"STREAMING",url_foto:"https://i.postimg.cc/pT42Cfpb/vix.png"},
+  {producto:"ADOBE CREATIVE CLOUD",suscripcion:"1 MES",stock:"NO",descripcion:"Suite completa de diseño",precio_unidad:10,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"EDUCACION",url_foto:"https://i.postimg.cc/VN8Vcdby/adobe.png"},
+  {producto:"DUOLINGO PANEL SCHOOL",suscripcion:"12 MESES",stock:"NO",descripcion:"Aprende idiomas y haz tu negocio",precio_unidad:8,pack_1:"5 UNIDADES",precio_1:30,pack_2:"10 UNIDADES",precio_2:40,categoria:"EDUCACION",url_foto:"https://i.postimg.cc/pXMGjmqm/duolingo.jpg"}
+];
 
-    let productos = [];
-
-    // Función para cargar datos desde CSV
-    async function cargarDatosDesdeCSV() {
-      try {
-        const res = await fetch(CSV_URL);
-        const csvText = await res.text();
-
-        // Parsear CSV con PapaParse
-        const parsed = Papa.parse(csvText, { header: true });
-        console.log("🔍 Datos parseados desde CSV:", parsed.data);
-
-        // Limpiar los nombres de las columnas detectadas
-        const columnasDetectadas = Object.keys(parsed.data[0] || {}).map(c => c.trim().toLowerCase());
-        console.log("🔍 Columnas detectadas (limpiadas):", columnasDetectadas);
-
-        // Columnas esperadas
-        const columnasEsperadas = [
-          "producto", "suscripcion", "stock", "descripcion",
-          "precio_unidad", "pack_1", "precio_1", "pack_2",
-          "precio_2", "categoria", "url_foto"
-        ];
-
-        // Verificar si faltan columnas
-        const faltantes = columnasEsperadas.filter(c => !columnasDetectadas.includes(c));
-        if (faltantes.length > 0) {
-          console.error("❌ Columnas faltantes en el CSV:", faltantes);
-          return;
-        }
-
-        // Procesar datos y limpiar precios
-        productos = parsed.data.map(p => ({
-          producto: p.producto?.trim() || "",
-          suscripcion: p.suscripcion?.trim() || "",
-          stock: p.stock?.trim() || "",
-          descripcion: p.descripcion?.trim() || "",
-          precio_unidad: parseFloat((p.precio_unidad || "0").replace(/[^0-9.]/g, "")) || 0,
-          pack_1: p.pack_1?.trim() || "",
-          precio_1: parseFloat((p.precio_1 || "0").replace(/[^0-9.]/g, "")) || 0,
-          pack_2: p.pack_2?.trim() || "",
-          precio_2: parseFloat((p.precio_2 || "0").replace(/[^0-9.]/g, "")) || 0,
-          categoria: p.categoria?.trim() || "",
-          url_foto: p.url_foto?.trim() || ""
-        }));
-
-        console.log("✅ Productos procesados:", productos);
-        mostrarProductos();
-        cargarFiltros();
-      } catch (error) {
-        console.error("❌ Error al cargar datos desde CSV:", error);
-      }
-    }
-
-    // Función para mostrar productos en el catálogo
     function mostrarProductos() {
       const contenedor = document.getElementById("catalogo");
-      const noResults = document.getElementById("noResults");
       const search = document.getElementById("searchInput").value.toLowerCase();
       const categoria = document.getElementById("categoryFilter").value;
       const stock = document.getElementById("stockFilter").value;
       const precioMax = parseFloat(document.getElementById("priceRange").value);
 
-      contenedor.innerHTML = ""; // Limpiar catálogo
+      contenedor.innerHTML = "";
 
-      // Filtrar productos
-      const productosFiltrados = productos.filter(p =>
-        (!search || p["producto"].toLowerCase().includes(search)) &&
-        (!categoria || p["categoria"] === categoria) &&
-        (!stock || p["stock"].toLowerCase() === stock) &&
-        (!isNaN(precioMax) && p["precio_unidad"] <= precioMax)
-      );
-
-      if (productosFiltrados.length === 0) {
-        noResults.classList.remove("hidden");
-      } else {
-        noResults.classList.add("hidden");
-        productosFiltrados.forEach(p => {
+      productos
+        .filter(p =>
+          (!search || p.producto.toLowerCase().includes(search)) &&
+          (!categoria || p.categoria === categoria) &&
+          (!stock || p.stock === stock) &&
+          (!isNaN(precioMax) && parseFloat(p.precio_unidad) <= precioMax)
+        )
+        .forEach(p => {
           const card = document.createElement("div");
           card.className = "bg-white p-4 shadow rounded flex flex-col";
+
           card.innerHTML = `
             <img src="${p.url_foto}" alt="${p.producto}" class="h-40 object-contain mb-2">
             <h2 class="text-lg font-bold mb-1">${p.producto}</h2>
             <p class="text-sm mb-1 font-semibold">${p.suscripcion}</p>
             <p class="text-sm mb-2">${p.descripcion}</p>
             <ul class="text-sm mb-4">
-              <li>🎯 Unidad: $${p["precio_unidad"].toFixed(2)}</li>
-              <li>📦 ${p["pack_1"]}: $${p["precio_1"].toFixed(2)}</li>
-              <li>📦 ${p["pack_2"]}: $${p["precio_2"].toFixed(2)}</li>
+              <li>🎯 Unidad: $${p.precio_unidad}</li>
+              <li>📦 ${p.pack_1}: $${p.precio_1}</li>
+              <li>📦 ${p.pack_2}: $${p.precio_2}</li>
             </ul>
+            <div class="grid grid-cols-1 gap-2">
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: Unidad\n💲 Precio: $${p.precio_unidad}`)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: ${p.pack_1}\n💲 Precio: $${p.precio_1}`)}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p.pack_1}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: ${p.pack_2}\n💲 Precio: $${p.precio_2}`)}" target="_blank" class="bg-green-700 hover:bg-green-800 text-white text-sm py-2 rounded text-center">Comprar ${p.pack_2}</a>
+            </div>
           `;
+
           contenedor.appendChild(card);
         });
-      }
     }
 
-    // Función para cargar las categorías en el filtro
     function cargarFiltros() {
-      const categorias = [...new Set(productos.map(p => p["categoria"]).filter(Boolean))];
+      const categorias = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
       const select = document.getElementById("categoryFilter");
       categorias.forEach(c => {
         const opt = document.createElement("option");
@@ -150,17 +118,14 @@
       });
     }
 
-    // Listeners para los filtros
     document.getElementById("searchInput").addEventListener("input", mostrarProductos);
     document.getElementById("categoryFilter").addEventListener("change", mostrarProductos);
     document.getElementById("stockFilter").addEventListener("change", mostrarProductos);
-    document.getElementById("priceRange").addEventListener("input", function () {
-      document.getElementById("priceLabel").textContent = `Hasta: $${this.value}`;
-      mostrarProductos();
-    });
+    document.getElementById("priceRange").addEventListener("input", mostrarProductos);
 
-    // Cargar datos al iniciar
-    cargarDatosDesdeCSV();
+    cargarFiltros();
+    mostrarProductos();
   </script>
 </body>
 </html>
+
