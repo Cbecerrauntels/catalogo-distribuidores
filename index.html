@@ -79,11 +79,11 @@
           suscripcion: p.suscripcion?.trim() || "",
           stock: p.stock?.trim() || "",
           descripcion: p.descripcion?.trim() || "",
-          precio_unidad: parseFloat((p.precio_unidad || "0").replace("USD", "").trim()) || 0,
+          precio_unidad: parseFloat((p.precio_unidad || "0").replace(/[^0-9.]/g, "")) || 0,
           pack_1: p.pack_1?.trim() || "",
-          precio_1: parseFloat((p.precio_1 || "0").replace("USD", "").trim()) || 0,
+          precio_1: parseFloat((p.precio_1 || "0").replace(/[^0-9.]/g, "")) || 0,
           pack_2: p.pack_2?.trim() || "",
-          precio_2: parseFloat((p.precio_2 || "0").replace("USD", "").trim()) || 0,
+          precio_2: parseFloat((p.precio_2 || "0").replace(/[^0-9.]/g, "")) || 0,
           categoria: p.categoria?.trim() || "",
           url_foto: p.url_foto?.trim() || ""
         }));
