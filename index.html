@@ -23,6 +23,7 @@
         <option value="NO">SIN STOCK</option>
       </select>
       <input id="priceRange" type="range" min="0" max="100" value="100" step="1" class="w-full">
+<div id="priceValue" class="text-center text-sm text-gray-700">Filtrando hasta $100</div>
       <div id="priceLabel" class="text-center text-sm col-span-1 md:col-span-4">Precio máximo: $100</div>
     </div>
 
@@ -73,6 +74,7 @@
       const precioMax = parseFloat(document.getElementById("priceRange").value);
 
       document.getElementById("priceLabel").textContent = `Precio máximo: $${precioMax}`;
+document.getElementById("priceValue").textContent = `Filtrando hasta $${precioMax}`;
 
       contenedor.innerHTML = "";
 
@@ -101,9 +103,9 @@
               <li>📦 ${p.pack_2}: $${p.precio_2}</li>
             </ul>
             <div class="grid grid-cols-1 gap-2">
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: Unidad\n💲 Precio: $${p.precio_unidad}`)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white text-sm py-2 rounded text-center">Comprar Unidad</a>
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: ${p.pack_1}\n💲 Precio: $${p.precio_1}`)}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white text-sm py-2 rounded text-center">Comprar ${p.pack_1}</a>
-              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: ${p.pack_2}\n💲 Precio: $${p.precio_2}`)}" target="_blank" class="bg-green-700 hover:bg-green-800 text-white text-sm py-2 rounded text-center">Comprar ${p.pack_2}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: Unidad\n💲 Precio: $${p.precio_unidad}`)}" target="_blank" class="bg-green-500 hover:scale-105 transition-all duration-200 font-semibold px-4 py-2 rounded shadow text-white">Comprar Unidad</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: ${p.pack_1}\n💲 Precio: $${p.precio_1}`)}" target="_blank" class="bg-green-600 hover:scale-105 transition-all duration-200 font-semibold px-4 py-2 rounded shadow text-white">Comprar ${p.pack_1}</a>
+              <a href="https://wa.me/51929809650?text=${encodeURIComponent(`Hola, quiero pedir:\n🛒 ${p.producto}\n✅ Opción: ${p.pack_2}\n💲 Precio: $${p.precio_2}`)}" target="_blank" class="bg-green-700 hover:scale-105 transition-all duration-200 font-semibold px-4 py-2 rounded shadow text-white">Comprar ${p.pack_2}</a>
             </div>
           `;
 
@@ -132,5 +134,4 @@
   </script>
 </body>
 </html>
-
 
