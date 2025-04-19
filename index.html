@@ -19,10 +19,11 @@
       </select>
       <select id="stockFilter" class="p-2 border rounded">
         <option value="">Todos</option>
-        <option value="SI">En stock</option>
-        <option value="NO">Sin stock</option>
+        <option value="SI">EN STOCK</option>
+        <option value="NO">SIN STOCK</option>
       </select>
-      <input id="priceRange" type="range" min="0" max="100" value="100" class="w-full">
+      <input id="priceRange" type="range" min="0" max="100" value="100" step="1" class="w-full">
+      <div id="priceLabel" class="text-center text-sm col-span-1 md:col-span-4">Precio máximo: $100</div>
     </div>
 
     <div id="catalogo" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -33,38 +34,36 @@
   </footer>
 
   <script>
-    // 🔁 Aquí puedes modificar tus productos cuando cambien los precios o stock
-    const productos = [
-  // 🔁 Productos pegados automáticamente desde tu CSV completo
-  {producto:"SPOTIFY PREMIUM",suscripcion:"12 MESES",stock:"SI",descripcion:"Musica sin publicidad, en alta definición",precio_unidad:15,pack_1:"5 UNIDADES",precio_1:60,pack_2:"12 UNIDADES",precio_2:120,categoria:"STREAMING",url_foto:"https://i.postimg.cc/j5wGcBpv/spotify.png"},
-  {producto:"YOUTUBE PREMIUM",suscripcion:"12 MESES",stock:"SI",descripcion:"Videos sin publicidad, incluye youtube music",precio_unidad:20,pack_1:"5 UNIDADES",precio_1:80,pack_2:"10 UNIDADES",precio_2:150,categoria:"STREAMING",url_foto:"https://i.postimg.cc/k40mK7p7/Youtube.png"},
-  {producto:"PANEL CANVA 50 USER",suscripcion:"12 MESES",stock:"SI",descripcion:"Panel de canva para 50 usuarios",precio_unidad:18,pack_1:"5 UNIDADES",precio_1:60,pack_2:"10 UNIDADES",precio_2:105,categoria:"DISEÑO",url_foto:"https://i.postimg.cc/xTPwTGnf/42.png"},
-  {producto:"PANEL CANVA 500 USER",suscripcion:"12 MESES",stock:"SI",descripcion:"Panel de canva para 500 usuarios",precio_unidad:20,pack_1:"5 UNIDADES",precio_1:90,pack_2:"12 UNIDADES",precio_2:168,categoria:"DISEÑO",url_foto:"https://i.postimg.cc/xTPwTGnf/42.png"},
-  {producto:"INVITACION CANVA EQUIPO",suscripcion:"12 MESES",stock:"SI",descripcion:"Invitación para ser parte de 1 equipo",precio_unidad:2,pack_1:"5 UNIDADES",precio_1:10,pack_2:"50 UNIDADES",precio_2:60,categoria:"DISEÑO",url_foto:"https://i.postimg.cc/gcV5NywV/canva-pro-price-in-bd-1048x855.jpg"},
-  {producto:"OFFICE 365 A1 PLUS",suscripcion:"12 MESES",stock:"SI",descripcion:"Office 365 completo con 100 GB almacenamiento ONEDRIVE.",precio_unidad:7,pack_1:"5 UNIDADES",precio_1:25,pack_2:"50 UNIDADES",precio_2:175,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/MGJVPBfB/A1-plus.png"},
-  {producto:"OFFICE 365 E5 ENTERPRISE",suscripcion:"12 MESES",stock:"SI",descripcion:"Office 365 completo con 5 TB almacenamiento onedrive",precio_unidad:25,pack_1:"5 UNIDADES",precio_1:100,pack_2:"25 UNIDADES",precio_2:250,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/9fHgdrW8/e5.jpg"},
-  {producto:"AUTODESK EDU",suscripcion:"12 MESES",stock:"SI",descripcion:"Los mejores programas para ingeniería",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:75,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/G23gHVQq/autodesk.jpg"},
-  {producto:"ZOOM EDU",suscripcion:"6 MESES",stock:"SI",descripcion:"300 PARTICIPANTES, GRABAR LA CONFERENCIA, PIZARRA INTERACTIVA, FUNCIONA SOLO PC",precio_unidad:16,pack_1:"5 UNIDADES",precio_1:70,pack_2:"10 UNIDADES",precio_2:110,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/Fsg4k5gQ/zoom-edu.png"},
-  {producto:"GITHUB DEVELOPER PACK",suscripcion:"NO APLICA",stock:"SI",descripcion:"Pack completo para desarrolladores",precio_unidad:20,pack_1:"5 UNIDADES",precio_1:80,pack_2:"10 UNIDADES",precio_2:120,categoria:"PROGRAMADOR",url_foto:"https://i.postimg.cc/t4CzdWP4/github.png"},
-  {producto:"ESET INTERNET SECURITY",suscripcion:"12 MESES",stock:"SI",descripcion:"Antivirus de alta gama, protección asegurada",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"10 UNIDADES",precio_2:40,categoria:"ANTIVIRUS",url_foto:"https://i.postimg.cc/KYWQ8j1v/eset.jpg"},
-  {producto:"GOOGLE WORKSPACE 2 TB",suscripcion:"12 MESES",stock:"SI",descripcion:"Almacenamiento sin límites. Se entrega cuenta nueva",precio_unidad:12,pack_1:"5 UNIDADES",precio_1:50,pack_2:"10 UNIDADES",precio_2:100,categoria:"ALMACENAMIENTO",url_foto:"https://i.postimg.cc/50YSCTkr/Chat-GPT-Image-16-abr-2025-12-14-53-p-m.png"},
-  {producto:"JETBRAINS EDU",suscripcion:"12 MESES",stock:"SI",descripcion:"Pack desarrollador completo",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:75,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/y6DxRdkC/jetbrains.png"},
-  {producto:"FIGMA EDU",suscripcion:"12 MESES",stock:"SI",descripcion:"Haz tus mejores diseños realidad",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:75,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/cCRchcXr/figma.png"},
-  {producto:"WINDOWS 11 PRO RETAIL",suscripcion:"PERMANENTE",stock:"SI",descripcion:"Licencia original retail. Garantía de activación",precio_unidad:7,pack_1:"5 UNIDADES",precio_1:25,pack_2:"25 UNIDADES",precio_2:100,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/cJJ0N93G/win11.png"},
-  {producto:"CCLEANER PRO",suscripcion:"12 MESES",stock:"SI",descripcion:"Limpia a fondo tu PC",precio_unidad:8,pack_1:"5 UNIDADES",precio_1:35,pack_2:"25 UNIDADES",precio_2:150,categoria:"SOFTWARE",url_foto:"https://i.postimg.cc/25G2RTDv/ccleaner.png"},
-  {producto:"GOMONEY BANK",suscripcion:"NO APLICA",stock:"SI",descripcion:"BANCA DE NIGERIA",precio_unidad:50,pack_1:"5 UNIDADES",precio_1:200,pack_2:"10 UNIDADES",precio_2:400,categoria:"BANCOS",url_foto:"https://i.postimg.cc/x1wcjS0V/go-money.png"},
-  {producto:"KUDA BANK",suscripcion:"NO APLICA",stock:"NO",descripcion:"BANCA DE NIGERIA",precio_unidad:50,pack_1:"5 UNIDADES",precio_1:200,pack_2:"10 UNIDADES",precio_2:400,categoria:"BANCOS",url_foto:"https://i.postimg.cc/YSrTWv26/Chat-GPT-Image-18-abr-2025-08-38-36-p-m.png"},
-  {producto:"NETFLIX",suscripcion:"1 MES",stock:"SI",descripcion:"Las mejores series y películas",precio_unidad:10,pack_1:"5 UNIDADES",precio_1:45,pack_2:"10 UNIDADES",precio_2:80,categoria:"STREAMING",url_foto:"https://i.postimg.cc/YqP5Tr3k/73f68aaa-ea3e-4fc0-a3de-bcdf369e77d5.jpg"},
-  {producto:"NETFLIX",suscripcion:"6 MESES",stock:"SI",descripcion:"Las mejores series y películas",precio_unidad:48,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"STREAMING",url_foto:"https://i.postimg.cc/YqP5Tr3k/73f68aaa-ea3e-4fc0-a3de-bcdf369e77d5.jpg"},
-  {producto:"PRIMEVIDEO",suscripcion:"1 MES",stock:"SI",descripcion:"Lo mejor en series antiguas",precio_unidad:3.5,pack_1:"5 UNIDADES",precio_1:15,pack_2:"10 UNIDADES",precio_2:22,categoria:"STREAMING",url_foto:"https://i.postimg.cc/Dwb9T9jG/111.png"},
-  {producto:"PRIMEVIDEO",suscripcion:"6 MESES",stock:"SI",descripcion:"Lo mejor en series antiguas",precio_unidad:18,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"STREAMING",url_foto:"https://i.postimg.cc/Dwb9T9jG/111.png"},
-  {producto:"HBO MAX STANDAR",suscripcion:"1 MES",stock:"SI",descripcion:"Disfruta de entretenimiento sin límites",precio_unidad:3,pack_1:"5 UNIDADES",precio_1:15,pack_2:"10 UNIDADES",precio_2:25,categoria:"STREAMING",url_foto:"https://i.postimg.cc/sgrgb4K3/max.png"},
-  {producto:"DISNEY PLUS",suscripcion:"1 MES",stock:"SI",descripcion:"Para ver en familia",precio_unidad:6,pack_1:"5 UNIDADES",precio_1:25,pack_2:"10 UNIDADES",precio_2:35,categoria:"STREAMING",url_foto:"https://i.postimg.cc/L8Tb2mkn/disney.jpg"},
-  {producto:"DISNEY PLUS",suscripcion:"6 MESES",stock:"SI",descripcion:"Para ver en familia",precio_unidad:30,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"STREAMING",url_foto:"https://i.postimg.cc/L8Tb2mkn/disney.jpg"},
-  {producto:"VIX PREMIUM",suscripcion:"1 MES",stock:"SI",descripcion:"Las mejores series y películas mexicanas",precio_unidad:2,pack_1:"5 UNIDADES",precio_1:7.5,pack_2:"12 UNIDADES",precio_2:10,categoria:"STREAMING",url_foto:"https://i.postimg.cc/pT42Cfpb/vix.png"},
-  {producto:"ADOBE CREATIVE CLOUD",suscripcion:"1 MES",stock:"NO",descripcion:"Suite completa de diseño",precio_unidad:10,pack_1:"NO APLICA",precio_1:0,pack_2:"NO APLICA",precio_2:0,categoria:"EDUCACION",url_foto:"https://i.postimg.cc/VN8Vcdby/adobe.png"},
-  {producto:"DUOLINGO PANEL SCHOOL",suscripcion:"12 MESES",stock:"NO",descripcion:"Aprende idiomas y haz tu negocio",precio_unidad:8,pack_1:"5 UNIDADES",precio_1:30,pack_2:"10 UNIDADES",precio_2:40,categoria:"EDUCACION",url_foto:"https://i.postimg.cc/pXMGjmqm/duolingo.jpg"}
-];
+    const productos = JSON.parse(`[
+  {"producto":"SPOTIFY PREMIUM","suscripcion":"12 MESES","stock":"SI","descripcion":"Música sin publicidad, en alta definición","precio_unidad":15,"pack_1":"5 UNIDADES","precio_1":60,"pack_2":"12 UNIDADES","precio_2":120,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/j5wGcBpv/spotify.png"},
+  {"producto":"YOUTUBE PREMIUM","suscripcion":"12 MESES","stock":"SI","descripcion":"Videos sin publicidad, incluye youtube music","precio_unidad":20,"pack_1":"5 UNIDADES","precio_1":80,"pack_2":"10 UNIDADES","precio_2":150,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/k40mK7p7/Youtube.png"},
+  {"producto":"PANEL CANVA 50 USER","suscripcion":"12 MESES","stock":"SI","descripcion":"Panel de canva para 50 usuarios","precio_unidad":18,"pack_1":"5 UNIDADES","precio_1":60,"pack_2":"10 UNIDADES","precio_2":105,"categoria":"DISEÑO","url_foto":"https://i.postimg.cc/xTPwTGnf/42.png"},
+  {"producto":"PANEL CANVA 500 USER","suscripcion":"12 MESES","stock":"SI","descripcion":"Panel de canva para 500 usuarios","precio_unidad":20,"pack_1":"5 UNIDADES","precio_1":90,"pack_2":"12 UNIDADES","precio_2":168,"categoria":"DISEÑO","url_foto":"https://i.postimg.cc/xTPwTGnf/42.png"},
+  {"producto":"INVITACION CANVA EQUIPO","suscripcion":"12 MESES","stock":"SI","descripcion":"Invitación para ser parte de 1 equipo","precio_unidad":2,"pack_1":"5 UNIDADES","precio_1":10,"pack_2":"50 UNIDADES","precio_2":60,"categoria":"DISEÑO","url_foto":"https://i.postimg.cc/gcV5NywV/canva-pro-price-in-bd-1048x855.jpg"},
+  {"producto":"OFFICE 365 A1 PLUS","suscripcion":"12 MESES","stock":"SI","descripcion":"Office 365 completo con 100 GB almacenamiento ONEDRIVE.","precio_unidad":7,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"50 UNIDADES","precio_2":175,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/MGJVPBfB/A1-plus.png"},
+  {"producto":"OFFICE 365 E5 ENTERPRISE","suscripcion":"12 MESES","stock":"SI","descripcion":"Office 365 completo con 5 TB almacenamiento onedrive","precio_unidad":25,"pack_1":"5 UNIDADES","precio_1":100,"pack_2":"25 UNIDADES","precio_2":250,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/9fHgdrW8/e5.jpg"},
+  {"producto":"AUTODESK EDU","suscripcion":"12 MESES","stock":"SI","descripcion":"Los mejores programas para ingeniería","precio_unidad":6,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"25 UNIDADES","precio_2":75,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/G23gHVQq/autodesk.jpg"},
+  {"producto":"ZOOM EDU","suscripcion":"6 MESES","stock":"SI","descripcion":"300 PARTICIPANTES, GRABAR LA CONFERENCIA, PIZARRA INTERACTIVA, FUNCIONA SOLO PC","precio_unidad":16,"pack_1":"5 UNIDADES","precio_1":70,"pack_2":"10 UNIDADES","precio_2":110,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/Fsg4k5gQ/zoom-edu.png"},
+  {"producto":"GITHUB DEVELOPER PACK","suscripcion":"NO APLICA","stock":"SI","descripcion":"Pack completo para desarrolladores","precio_unidad":20,"pack_1":"5 UNIDADES","precio_1":80,"pack_2":"10 UNIDADES","precio_2":120,"categoria":"PROGRAMADOR","url_foto":"https://i.postimg.cc/t4CzdWP4/github.png"},
+  {"producto":"ESET INTERNET SECURITY","suscripcion":"12 MESES","stock":"SI","descripcion":"Antivirus de alta gama, protección asegurada","precio_unidad":6,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"10 UNIDADES","precio_2":40,"categoria":"ANTIVIRUS","url_foto":"https://i.postimg.cc/KYWQ8j1v/eset.jpg"},
+  {"producto":"GOOGLE WORKSPACE 2 TB","suscripcion":"12 MESES","stock":"SI","descripcion":"Almacenamiento sin límites. Se entrega cuenta nueva","precio_unidad":12,"pack_1":"5 UNIDADES","precio_1":50,"pack_2":"10 UNIDADES","precio_2":100,"categoria":"ALMACENAMIENTO","url_foto":"https://i.postimg.cc/50YSCTkr/Chat-GPT-Image-16-abr-2025-12-14-53-p-m.png"},
+  {"producto":"JETBRAINS EDU","suscripcion":"12 MESES","stock":"SI","descripcion":"Pack desarrollador completo","precio_unidad":6,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"25 UNIDADES","precio_2":75,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/y6DxRdkC/jetbrains.png"},
+  {"producto":"FIGMA EDU","suscripcion":"12 MESES","stock":"SI","descripcion":"Haz tus mejores diseños realidad","precio_unidad":6,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"25 UNIDADES","precio_2":75,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/cCRchcXr/figma.png"},
+  {"producto":"WINDOWS 11 PRO RETAIL","suscripcion":"PERMANENTE","stock":"SI","descripcion":"Licencia original retail. Garantía de activación","precio_unidad":7,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"25 UNIDADES","precio_2":100,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/cJJ0N93G/win11.png"},
+  {"producto":"CCLEANER PRO","suscripcion":"12 MESES","stock":"SI","descripcion":"Limpia a fondo tu PC","precio_unidad":8,"pack_1":"5 UNIDADES","precio_1":35,"pack_2":"25 UNIDADES","precio_2":150,"categoria":"SOFTWARE","url_foto":"https://i.postimg.cc/25G2RTDv/ccleaner.png"},
+  {"producto":"GOMONEY BANK","suscripcion":"NO APLICA","stock":"SI","descripcion":"BANCA DE NIGERIA","precio_unidad":50,"pack_1":"5 UNIDADES","precio_1":200,"pack_2":"10 UNIDADES","precio_2":400,"categoria":"BANCOS","url_foto":"https://i.postimg.cc/x1wcjS0V/go-money.png"},
+  {"producto":"KUDA BANK","suscripcion":"NO APLICA","stock":"NO","descripcion":"BANCA DE NIGERIA","precio_unidad":50,"pack_1":"5 UNIDADES","precio_1":200,"pack_2":"10 UNIDADES","precio_2":400,"categoria":"BANCOS","url_foto":"https://i.postimg.cc/YSrTWv26/Chat-GPT-Image-18-abr-2025-08-38-36-p-m.png"},
+  {"producto":"NETFLIX","suscripcion":"1 MES","stock":"SI","descripcion":"Las mejores series y películas","precio_unidad":10,"pack_1":"5 UNIDADES","precio_1":45,"pack_2":"10 UNIDADES","precio_2":80,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/YqP5Tr3k/73f68aaa-ea3e-4fc0-a3de-bcdf369e77d5.jpg"},
+  {"producto":"NETFLIX","suscripcion":"6 MESES","stock":"SI","descripcion":"Las mejores series y películas","precio_unidad":48,"pack_1":"NO APLICA","precio_1":0,"pack_2":"NO APLICA","precio_2":0,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/YqP5Tr3k/73f68aaa-ea3e-4fc0-a3de-bcdf369e77d5.jpg"},
+  {"producto":"PRIMEVIDEO","suscripcion":"1 MES","stock":"SI","descripcion":"Lo mejor en series antiguas","precio_unidad":3.5,"pack_1":"5 UNIDADES","precio_1":15,"pack_2":"10 UNIDADES","precio_2":22,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/Dwb9T9jG/111.png"},
+  {"producto":"PRIMEVIDEO","suscripcion":"6 MESES","stock":"SI","descripcion":"Lo mejor en series antiguas","precio_unidad":18,"pack_1":"NO APLICA","precio_1":0,"pack_2":"NO APLICA","precio_2":0,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/Dwb9T9jG/111.png"},
+  {"producto":"HBO MAX STANDAR","suscripcion":"1 MES","stock":"SI","descripcion":"Disfruta de entretenimiento sin límites","precio_unidad":3,"pack_1":"5 UNIDADES","precio_1":15,"pack_2":"10 UNIDADES","precio_2":25,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/sgrgb4K3/max.png"},
+  {"producto":"DISNEY PLUS","suscripcion":"1 MES","stock":"SI","descripcion":"Para ver en familia","precio_unidad":6,"pack_1":"5 UNIDADES","precio_1":25,"pack_2":"10 UNIDADES","precio_2":35,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/L8Tb2mkn/disney.jpg"},
+  {"producto":"DISNEY PLUS","suscripcion":"6 MESES","stock":"SI","descripcion":"Para ver en familia","precio_unidad":30,"pack_1":"NO APLICA","precio_1":0,"pack_2":"NO APLICA","precio_2":0,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/L8Tb2mkn/disney.jpg"},
+  {"producto":"VIX PREMIUM","suscripcion":"1 MES","stock":"SI","descripcion":"Las mejores series y películas mexicanas","precio_unidad":2,"pack_1":"5 UNIDADES","precio_1":7.5,"pack_2":"12 UNIDADES","precio_2":10,"categoria":"STREAMING","url_foto":"https://i.postimg.cc/pT42Cfpb/vix.png"},
+  {"producto":"ADOBE CREATIVE CLOUD","suscripcion":"1 MES","stock":"NO","descripcion":"Suite completa de diseño","precio_unidad":10,"pack_1":"NO APLICA","precio_1":0,"pack_2":"NO APLICA","precio_2":0,"categoria":"EDUCACION","url_foto":"https://i.postimg.cc/VN8Vcdby/adobe.png"},
+  {"producto":"DUOLINGO PANEL SCHOOL","suscripcion":"12 MESES","stock":"NO","descripcion":"Aprende idiomas y haz tu negocio","precio_unidad":8,"pack_1":"5 UNIDADES","precio_1":30,"pack_2":"10 UNIDADES","precio_2":40,"categoria":"EDUCACION","url_foto":"https://i.postimg.cc/pXMGjmqm/duolingo.jpg"}
+]`); // aquí permanece toda tu lista
 
     function mostrarProductos() {
       const contenedor = document.getElementById("catalogo");
@@ -73,15 +72,20 @@
       const stock = document.getElementById("stockFilter").value;
       const precioMax = parseFloat(document.getElementById("priceRange").value);
 
+      document.getElementById("priceLabel").textContent = `Precio máximo: $${precioMax}`;
+
       contenedor.innerHTML = "";
 
       productos
-        .filter(p =>
-          (!search || p.producto.toLowerCase().includes(search)) &&
-          (!categoria || p.categoria === categoria) &&
-          (!stock || p.stock === stock) &&
-          (!isNaN(precioMax) && parseFloat(p.precio_unidad) <= precioMax)
-        )
+        .filter(p => {
+          const precioValido = !isNaN(precioMax) && parseFloat(p.precio_unidad) <= precioMax;
+          return (
+            (!search || p.producto.toLowerCase().includes(search)) &&
+            (!categoria || p.categoria === categoria) &&
+            (!stock || p.stock.toUpperCase() === stock.toUpperCase()) &&
+            precioValido
+          );
+        })
         .forEach(p => {
           const card = document.createElement("div");
           card.className = "bg-white p-4 shadow rounded flex flex-col";
@@ -128,4 +132,5 @@
   </script>
 </body>
 </html>
+
 
